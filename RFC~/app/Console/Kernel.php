@@ -12,7 +12,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Check SLA breaches every hour
+        $schedule->command('sla:check')->hourly();
+        
+        // Check for spam reports every 6 hours
+        $schedule->command('reports:check-spam')->everySixHours();
+        
+        // Clean up old notifications (older than 30 days)
+        $schedule->command('notifications:cleanup')->daily();
+        
+        // Clean up temporary files every 6 hours
+        $schedule->command('files:cleanup')->everySixHours();
     }
 
     /**
