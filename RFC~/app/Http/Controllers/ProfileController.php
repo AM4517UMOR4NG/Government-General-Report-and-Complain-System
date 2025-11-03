@@ -86,35 +86,40 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            'theme' => 'required|in:light,dark',
+        $validated = $request->validate([
+            'dashboard_layout' => 'required|in:compact,comfortable,spacious',
+            'items_per_page' => 'required|in:10,15,25,50',
             'language' => 'required|in:id,en',
-            'notifications.email' => 'boolean',
-            'notifications.browser' => 'boolean',
-            'notifications.sms' => 'boolean',
-            'privacy.show_email' => 'boolean',
-            'privacy.show_phone' => 'boolean',
-            'privacy.show_address' => 'boolean',
+            'notifications' => 'nullable|array',
+            'privacy' => 'nullable|array',
         ]);
 
         $settings = [
-            'theme' => $request->theme,
-            'language' => $request->language,
+            'dashboard_layout' => $validated['dashboard_layout'],
+            'items_per_page' => (int) $validated['items_per_page'],
+            'language' => $validated['language'],
             'notifications' => [
-                'email' => $request->boolean('notifications.email'),
-                'browser' => $request->boolean('notifications.browser'),
-                'sms' => $request->boolean('notifications.sms'),
+                'email' => $request->has('notifications.email'),
+                'browser' => $request->has('notifications.browser'),
+                'sms' => $request->has('notifications.sms'),
+                'reports' => $request->has('notifications.reports'),
+                'complaints' => $request->has('notifications.complaints'),
+                'status' => $request->has('notifications.status'),
             ],
             'privacy' => [
-                'show_email' => $request->boolean('privacy.show_email'),
-                'show_phone' => $request->boolean('privacy.show_phone'),
-                'show_address' => $request->boolean('privacy.show_address'),
+                'show_email' => $request->has('privacy.show_email'),
+                'show_phone' => $request->has('privacy.show_phone'),
+                'show_address' => $request->has('privacy.show_address'),
             ],
         ];
 
-        $user->updateSettings($settings);
-
-        return redirect()->route('profile.settings')->with('success', 'Pengaturan berhasil disimpan!');
+        try {
+            $user->updateSettings($settings);
+            return redirect()->route('profile.settings')->with('success', 'Pengaturan berhasil disimpan!');
+        } catch (\Exception $e) {
+            \Log::error('Settings update failed: ' . $e->getMessage());
+            return redirect()->route('profile.settings')->with('error', 'Gagal menyimpan pengaturan. Silakan coba lagi.');
+        }
     }
 
     /**
