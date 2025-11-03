@@ -414,4 +414,58 @@ class AdministrationDashboardController extends Controller
 
         return back()->with('success', 'Laporan telah dikonfirmasi ke admin.');
     }
+
+    /**
+     * Update report status (for staff and department head)
+     */
+    public function updateReport(Request $request, $id)
+    {
+        $user = Auth::user();
+        $report = Report::findOrFail($id);
+
+        // Authorization check
+        if ($user->role === 'staff') {
+            // Staff can only update reports assigned to them
+            if ($report->assigned_to !== $user->id) {
+                abort(403, 'Unauthorized');
+            }
+        } elseif ($user->role === 'department_head') {
+            // Department head can update reports in their department
+            if ($report->department_id !== $user->department_id) {
+                abort(403, 'Unauthorized');
+            }
+        } else {
+            abort(403, 'Unauthorized');
+        }
+
+        // Update status
+        $oldStatus = $report->status;
+        $report->update([
+            'status' => $request->status,
+            'resolution_notes' => $request->resolution_notes ?? $report->resolution_notes,
+            'last_activity_at' => now(),
+        ]);
+
+        // Mark as resolved if status is resolved
+        if ($request->status === 'resolved' && !$report->resolved_at) {
+            $report->update(['resolved_at' => now()]);
+        }
+
+        // Create audit log
+        AuditLog::create([
+            'auditable_type' => Report::class,
+            'auditable_id' => $report->id,
+            'action' => 'status_updated',
+            'old_values' => ['status' => $oldStatus],
+            'new_values' => ['status' => $request->status],
+            'user_id' => $user->id,
+            'performed_at' => now()
+        ]);
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'report' => $report]);
+        }
+
+        return back()->with('success', 'Status laporan berhasil diperbarui.');
+    }
 }
