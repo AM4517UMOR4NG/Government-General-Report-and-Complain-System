@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+// Landing Page
+Route::get('/', function () {
+    return view('landing');
+})->name('landing');
+
 // Authentication Routes
 Auth::routes();
 
@@ -31,11 +36,6 @@ Route::get('/logout', function () {
     request()->session()->regenerateToken();
     return redirect('/');
 })->name('logout.get');
-
-// Public Routes
-Route::get('/', function () {
-    return redirect()->route('login');
-});
 
 // Dashboard Routes based on user role
 Route::middleware(['auth'])->group(function () {
@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         // Tambahan fitur admin untuk keluhan
         Route::post('/complaints/{id}/confirm', [App\Http\Controllers\AdminDashboardController::class, 'confirmComplaint'])->name('complaints.confirm');
         Route::get('/complaints/{id}/edit', [App\Http\Controllers\AdminDashboardController::class, 'editComplaint'])->name('complaints.edit');
+        Route::put('/complaints/{id}', [App\Http\Controllers\AdminDashboardController::class, 'updateComplaint'])->name('complaints.update');
         Route::delete('/complaints/{id}', [App\Http\Controllers\AdminDashboardController::class, 'deleteComplaint'])->name('complaints.delete');
         Route::get('/users', [App\Http\Controllers\AdminDashboardController::class, 'users'])->name('users');
         Route::get('/departments', [App\Http\Controllers\AdminDashboardController::class, 'departments'])->name('departments');
@@ -90,6 +91,20 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/reports/{id}/confirm-to-admin', [App\Http\Controllers\AdministrationDashboardController::class, 'confirmToAdmin'])->name('reports.confirm_to_admin');
         Route::post('/reports/{id}/assign', [App\Http\Controllers\AdministrationDashboardController::class, 'assignReport'])->name('reports.assign');
         Route::post('/complaints/{id}/assign', [App\Http\Controllers\AdministrationDashboardController::class, 'assignComplaint'])->name('complaints.assign');
+    });
+
+    // Staff Routes (alias to administration for testing compatibility)
+    Route::middleware(['staff'])->prefix('staff')->name('staff.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\AdministrationDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/reports', [App\Http\Controllers\AdministrationDashboardController::class, 'reports'])->name('reports.index');
+        Route::put('/reports/{id}', [App\Http\Controllers\AdministrationDashboardController::class, 'updateReport'])->name('reports.update');
+    });
+
+    // Department Head Routes (alias to administration for testing compatibility)
+    Route::middleware(['department_head'])->prefix('department')->name('department.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\AdministrationDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/reports', [App\Http\Controllers\AdministrationDashboardController::class, 'reports'])->name('reports.index');
+        Route::put('/reports/{id}', [App\Http\Controllers\AdministrationDashboardController::class, 'updateReport'])->name('reports.update');
     });
 
     // Citizen Dashboard Routes
