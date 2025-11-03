@@ -9,6 +9,7 @@ use App\Models\Complaint;
 use App\Models\Department;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardController extends Controller
 {
@@ -256,6 +257,17 @@ class AdminDashboardController extends Controller
         $workflowService = app(\App\Services\WorkflowService::class);
         $workflowService->assignReport($report, $assignedTo, Auth::user(), $request->notes);
         
+        // Refresh report to get updated data
+        $report->refresh();
+        
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Laporan berhasil ditugaskan ke ' . $assignedTo->name . '.',
+                'report' => $report
+            ]);
+        }
+        
         return redirect()->back()->with('success', 'Laporan berhasil ditugaskan ke ' . $assignedTo->name . '.');
     }
 
@@ -410,10 +422,27 @@ class AdminDashboardController extends Controller
     public function updateComplaint(Request $request, $id)
     {
         $complaint = Complaint::findOrFail($id);
-        $complaint->update($request->only([
-            'title', 'description', 'category', 'status', 'priority', 'department_id', 'assigned_to', 'location'
-        ]));
-        return redirect()->route('admin.complaints')->with('success', 'Keluhan berhasil diperbarui.');
+        
+        $validated = $request->validate([
+            'status' => 'nullable|string',
+            'resolution_notes' => 'nullable|string',
+        ]);
+        
+        $complaint->update([
+            'status' => $request->status ?? $complaint->status,
+            'resolution_notes' => $request->resolution_notes ?? $complaint->resolution_notes,
+            'last_activity_at' => now(),
+        ]);
+        
+        if ($request->status === 'resolved' && !$complaint->resolved_at) {
+            $complaint->update(['resolved_at' => now()]);
+        }
+        
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'complaint' => $complaint]);
+        }
+        
+        return back()->with('success', 'Status keluhan berhasil diperbarui.');
     }
 
     public function deleteComplaint($id)
