@@ -175,12 +175,16 @@ class User extends Authenticatable
     public function getSettings($key = null, $default = null)
     {
         $defaultSettings = [
-            'theme' => 'light',
+            'dashboard_layout' => 'comfortable',
+            'items_per_page' => 15,
             'language' => 'id',
             'notifications' => [
                 'email' => true,
                 'browser' => true,
                 'sms' => false,
+                'reports' => true,
+                'complaints' => true,
+                'status' => true,
             ],
             'privacy' => [
                 'show_email' => false,
@@ -189,13 +193,14 @@ class User extends Authenticatable
             ],
         ];
 
-        $settings = array_merge($defaultSettings, $this->settings ?? []);
+        $settings = is_array($this->settings) ? $this->settings : [];
+        $mergedSettings = array_replace_recursive($defaultSettings, $settings);
 
         if ($key) {
-            return data_get($settings, $key, $default);
+            return data_get($mergedSettings, $key, $default);
         }
 
-        return $settings;
+        return $mergedSettings;
     }
 
     /**
@@ -204,7 +209,7 @@ class User extends Authenticatable
     public function updateSettings(array $newSettings)
     {
         $currentSettings = $this->getSettings();
-        $this->settings = array_merge($currentSettings, $newSettings);
+        $this->settings = array_replace_recursive($currentSettings, $newSettings);
         $this->save();
     }
 
