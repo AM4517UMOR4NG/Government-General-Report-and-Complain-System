@@ -3,17 +3,60 @@
 @section('title', 'Detail Keluhan')
 
 @section('content')
+<style>
+    body { background: #f8f9fa; padding-top: 80px !important; }
+    .page-header-modern {
+        background: linear-gradient(135deg, #003d6b 0%, #004a7f 50%, #00527a 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 61, 107, 0.5);
+    }
+    .page-header-modern h2 { color: white; margin: 0; font-size: 1.875rem; font-weight: 700; }
+    .page-header-modern p { color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0; }
+    .btn-back {
+        background: white;
+        color: #003d6b;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .btn-back:hover { background: #f0f9ff; color: #003d6b; transform: translateY(-2px); }
+    .card-modern {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    .card-header-modern {
+        background: linear-gradient(135deg, #004a7f 0%, #00527a 100%);
+        padding: 1.25rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .card-header-modern h5 { margin: 0; color: white; font-weight: 600; font-size: 1.1rem; }
+    .card-header-modern i { color: white; font-size: 1.2rem; }
+</style>
 <div class="container-fluid">
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="page-header-modern d-flex justify-content-between align-items-center">
         <div>
-            <h2 class="mb-1" style="font-weight: 700; color: var(--text);">
-                <i class="fas fa-exclamation-triangle me-2" style="color: var(--warning);"></i>Detail Keluhan
-            </h2>
-            <p class="text-muted mb-0">Informasi lengkap keluhan Anda</p>
+            <h2><i class="fas fa-exclamation-triangle me-2"></i>Detail Keluhan</h2>
+            <p>Informasi lengkap keluhan Anda</p>
         </div>
-        <a href="{{ route('citizen.complaints.index') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Kembali
+        <a href="{{ route('citizen.complaints.index') }}" class="btn-back">
+            <i class="fas fa-arrow-left"></i>Kembali
         </a>
     </div>
 
@@ -21,10 +64,10 @@
     <div class="row g-4">
         <div class="col-lg-8">
             <!-- Complaint Info Card -->
-            <div class="card mb-4">
-                <div class="card-header d-flex align-items-center gap-2">
-                    <i class="fas fa-info-circle" style="color: var(--warning);"></i>
-                    <h5 class="mb-0" style="font-weight: 600;">Informasi Keluhan</h5>
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="fas fa-info-circle"></i>
+                    <h5>Informasi Keluhan</h5>
                 </div>
                 <div class="card-body">
                     <!-- Ticket Number Badge -->
