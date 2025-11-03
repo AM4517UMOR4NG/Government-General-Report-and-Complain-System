@@ -3,68 +3,268 @@
 @section('title', 'Citizen Dashboard')
 
 @section('content')
-<!-- Page Header -->
-<div class="page-header fade-in-up">
-    <div class="page-header-content">
-        <h1 class="page-title">Dashboard Warga</h1>
-        <p class="page-subtitle">Selamat datang di sistem pelaporan dan keluhan pemerintah. Sampaikan aspirasi Anda dengan mudah.</p>
-    </div>
-</div>
+<style>
+    .navbar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 1030 !important;
+    }
 
-<!-- Statistics Cards (Bootstrap row for clean horizontal layout) -->
-<div class="row g-3 mb-3">
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="stat-card fade-in-up h-100">
-            <div class="stat-icon report-icon">
-                <i class="fas fa-file-alt"></i>
-            </div>
-            <div class="stat-number">{{ $myReports->count() ?? 0 }}</div>
-            <div class="stat-label">Laporan Saya</div>
+    body {
+        padding-top: 80px !important;
+        background: #f8f9fa;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, #003d6b 0%, #004a7f 50%, #00527a 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 61, 107, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+    }
+
+    .dashboard-header-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-header-desc {
+        font-size: 0.95rem;
+        opacity: 0.95;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-header-time {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-top: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .quick-stat-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .quick-stat-box:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .quick-stat-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-stat-number {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .quick-stat-label {
+        font-size: 0.8rem;
+        opacity: 0.9;
+    }
+
+    .dashboard-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .dashboard-card-header {
+        background: linear-gradient(135deg, #004a7f 0%, #00527a 100%);
+        padding: 1.25rem;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: white;
+    }
+
+    .dashboard-card-header i {
+        color: white;
+        font-size: 1.3rem;
+    }
+
+    .dashboard-card-header h3 {
+        margin: 0;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .dashboard-card-body {
+        padding: 1.5rem;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #003d6b 0%, #00527a 100%);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .action-btn:hover {
+        background: linear-gradient(135deg, #002d4f 0%, #003d5a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 61, 107, 0.3);
+        color: white;
+    }
+
+    .action-btn.outline {
+        background: white;
+        color: #003d6b;
+        border: 2px solid #003d6b;
+    }
+
+    .action-btn.outline:hover {
+        background: #003d6b;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        .dashboard-header-title {
+            font-size: 1.5rem;
+        }
+        .quick-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Dashboard Header -->
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="dashboard-header-title">
+            <i class="fas fa-user-circle me-2"></i>Dashboard Warga
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="stat-card fade-in-up h-100">
-            <div class="stat-icon complaint-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="stat-number">{{ $myComplaints->count() ?? 0 }}</div>
-            <div class="stat-label">Keluhan Saya</div>
+        <div class="dashboard-header-desc">
+            Selamat datang di sistem pelaporan dan keluhan pemerintah. Sampaikan aspirasi Anda dengan mudah.
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="stat-card fade-in-up h-100">
-            <div class="stat-icon gov-icon">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-number">{{ $pendingCount ?? 0 }}</div>
-            <div class="stat-label">Sedang Diproses</div>
+        <div class="dashboard-header-time">
+            <i class="fas fa-clock me-1"></i>{{ now()->format('d F Y, H:i') }}
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="stat-card fade-in-up h-100">
-            <div class="stat-icon user-icon">
-                <i class="fas fa-check-circle"></i>
+        <div class="quick-stats">
+            <div class="quick-stat-box">
+                <div class="quick-stat-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="quick-stat-number">{{ $myReports->count() ?? 0 }}</div>
+                <div class="quick-stat-label">Laporan Saya</div>
             </div>
-            <div class="stat-number">{{ $resolvedCount ?? 0 }}</div>
-            <div class="stat-label">Selesai</div>
+            <div class="quick-stat-box">
+                <div class="quick-stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="quick-stat-number">{{ $myComplaints->count() ?? 0 }}</div>
+                <div class="quick-stat-label">Keluhan Saya</div>
+            </div>
+            <div class="quick-stat-box">
+                <div class="quick-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="quick-stat-number">{{ $pendingCount ?? 0 }}</div>
+                <div class="quick-stat-label">Sedang Diproses</div>
+            </div>
+            <div class="quick-stat-box">
+                <div class="quick-stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="quick-stat-number">{{ $resolvedCount ?? 0 }}</div>
+                <div class="quick-stat-label">Selesai</div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Feature Cards -->
-<div class="feature-grid">
-    <!-- Buat Laporan Baru -->
-    <div class="feature-card fade-in-up">
-        <div class="feature-header">
-            <div class="feature-title">
-                <i class="fas fa-plus-circle text-primary"></i>
-                Buat Laporan Baru
+<div class="dashboard-container">
+    <div class="dashboard-grid">
+        <!-- Buat Laporan Baru -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-header">
+                <i class="fas fa-plus-circle"></i>
+                <h3>Buat Laporan Baru</h3>
             </div>
-            <div class="feature-description">
-                Laporkan masalah, keluhan, atau saran Anda kepada pemerintah. Sistem kami akan memastikan laporan Anda ditangani dengan baik.
-            </div>
-        </div>
-        <div class="feature-body">
+            <div class="dashboard-card-body">
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
@@ -122,29 +322,24 @@
                     </div>
                 </div>
             </div>
-            <div class="feature-actions">
-                <a href="{{ route('citizen.reports.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Buat Laporan
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="{{ route('citizen.reports.create') }}" class="action-btn">
+                    <i class="fas fa-plus"></i>Buat Laporan
                 </a>
-                <a href="{{ route('citizen.complaints.create') }}" class="btn btn-outline-primary">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Buat Keluhan
+                <a href="{{ route('citizen.complaints.create') }}" class="action-btn outline">
+                    <i class="fas fa-exclamation-triangle"></i>Buat Keluhan
                 </a>
             </div>
         </div>
     </div>
 
     <!-- Laporan Saya -->
-    <div class="feature-card fade-in-up">
-        <div class="feature-header">
-            <div class="feature-title">
-                <i class="fas fa-file-alt text-success"></i>
-                Laporan Saya
-            </div>
-            <div class="feature-description">
-                Pantau status dan progress laporan yang telah Anda kirimkan. Lihat tanggapan dan tindak lanjut dari pemerintah.
-            </div>
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <i class="fas fa-file-alt"></i>
+            <h3>Laporan Saya</h3>
         </div>
-        <div class="feature-body">
+        <div class="dashboard-card-body">
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
@@ -178,26 +373,21 @@
                     </div>
                 </div>
             </div>
-            <div class="feature-actions">
-                <a href="{{ route('citizen.reports.index') }}" class="btn btn-primary">
-                    <i class="fas fa-eye me-2"></i>Lihat Semua
+            <div style="margin-top: 1.5rem;">
+                <a href="{{ route('citizen.reports.index') }}" class="action-btn">
+                    <i class="fas fa-eye"></i>Lihat Semua
                 </a>
             </div>
         </div>
     </div>
 
     <!-- Keluhan Saya -->
-    <div class="feature-card fade-in-up">
-        <div class="feature-header">
-            <div class="feature-title">
-                <i class="fas fa-exclamation-triangle text-warning"></i>
-                Keluhan Saya
-            </div>
-            <div class="feature-description">
-                Sampaikan keluhan Anda tentang pelayanan pemerintah dan dapatkan tanggapan yang konstruktif.
-            </div>
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Keluhan Saya</h3>
         </div>
-        <div class="feature-body">
+        <div class="dashboard-card-body">
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
@@ -230,26 +420,21 @@
                     </div>
                 </div>
             </div>
-            <div class="feature-actions">
-                <a href="{{ route('citizen.complaints.index') }}" class="btn btn-primary">
-                    <i class="fas fa-eye me-2"></i>Lihat Semua
+            <div style="margin-top: 1.5rem;">
+                <a href="{{ route('citizen.complaints.index') }}" class="action-btn">
+                    <i class="fas fa-eye"></i>Lihat Semua
                 </a>
             </div>
         </div>
     </div>
 
     <!-- Panduan & Bantuan -->
-    <div class="feature-card fade-in-up">
-        <div class="feature-header">
-            <div class="feature-title">
-                <i class="fas fa-question-circle text-info"></i>
-                Panduan & Bantuan
-            </div>
-            <div class="feature-description">
-                Pelajari cara menggunakan sistem ini dengan efektif dan dapatkan bantuan jika mengalami kesulitan.
-            </div>
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <i class="fas fa-question-circle"></i>
+            <h3>Panduan & Bantuan</h3>
         </div>
-        <div class="feature-body">
+        <div class="dashboard-card-body">
             <div class="row">
                 <div class="col-md-6">
                     <div class="help-item mb-3">
@@ -300,31 +485,28 @@
                     </div>
                 </div>
             </div>
-            <div class="feature-actions">
-                <a href="#" class="btn btn-primary">
-                    <i class="fas fa-book me-2"></i>Baca Panduan
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="#" class="action-btn">
+                    <i class="fas fa-book"></i>Baca Panduan
                 </a>
-                <a href="#" class="btn btn-outline-primary">
-                    <i class="fas fa-headset me-2"></i>Hubungi Support
+                <a href="#" class="action-btn outline">
+                    <i class="fas fa-headset"></i>Hubungi Support
                 </a>
             </div>
         </div>
+    </div>
     </div>
 </div>
 
 <!-- Progress Tracking -->
 @if($myReports && $myReports->count() > 0)
-<div class="feature-card fade-in-up">
-    <div class="feature-header">
-        <div class="feature-title">
-            <i class="fas fa-chart-line text-success"></i>
-            Tracking Progress
+<div class="dashboard-container">
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <i class="fas fa-chart-line"></i>
+            <h3>Tracking Progress</h3>
         </div>
-        <div class="feature-description">
-            Pantau progress laporan Anda secara real-time dan lihat estimasi waktu penyelesaian.
-        </div>
-    </div>
-    <div class="feature-body">
+        <div class="dashboard-card-body">
         <div class="row">
             @foreach($myReports->take(2) as $report)
             <div class="col-md-6">
