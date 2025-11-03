@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('reports', function (Blueprint $table) {
             // Add workflow fields
             $table->string('ticket_no')->unique()->after('id');
-            $table->enum('status', ['submitted', 'verified', 'rejected', 'assigned', 'in_progress', 'awaiting_info', 'resolved', 'pending_approval', 'closed', 'escalated'])->default('submitted')->change();
+            $table->enum('status', ['pending', 'submitted', 'verified', 'rejected', 'assigned', 'in_progress', 'awaiting_info', 'resolved', 'pending_approval', 'closed', 'escalated'])->default('submitted')->change();
             $table->timestamp('sla_due_at')->nullable()->after('resolved_at');
             $table->boolean('is_escalated')->default(false)->after('sla_due_at');
             $table->integer('reassign_count')->default(0)->after('is_escalated');
