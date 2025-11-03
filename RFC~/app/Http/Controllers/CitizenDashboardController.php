@@ -141,7 +141,7 @@ class CitizenDashboardController extends Controller
             'location' => $request->location,
             'priority' => $request->priority,
             'user_id' => Auth::id(),
-            'status' => 'pending',
+            'status' => 'submitted',
             'attachments' => $attachments ?: null,
         ]);
 
@@ -188,9 +188,10 @@ class CitizenDashboardController extends Controller
 
     public function showReport($id)
     {
-        $report = Report::with(['department', 'assignedUser'])
-            ->where('user_id', Auth::id())
-            ->findOrFail($id);
+        $report = Report::with(['department', 'assignedUser'])->findOrFail($id);
+        
+        // Use policy to check authorization
+        $this->authorize('view', $report);
 
         return view('citizen.reports.show', compact('report'));
     }
