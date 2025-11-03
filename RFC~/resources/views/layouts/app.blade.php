@@ -21,9 +21,6 @@
     <!-- Scripts -->
     <link href="{{ asset('build/assets/app-IgyIM7qE.css') }}" rel="stylesheet">
     <script src="{{ asset('build/assets/app-CdQXwo7F.js') }}"></script>
-    <script>
-        alert('JS aplikasi berhasil dimuat! Jika Anda melihat alert ini, file JS sudah aktif. Jika tidak muncul, file JS tidak termuat.');
-    </script>
     <style>
         .modal, .modal-backdrop, .modal-content, .modal-dialog {
             pointer-events: auto !important;
