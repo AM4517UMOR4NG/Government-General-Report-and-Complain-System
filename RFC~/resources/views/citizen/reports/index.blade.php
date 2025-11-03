@@ -3,14 +3,41 @@
 @section('title', 'Laporan Saya')
 
 @section('content')
+<style>
+    body { background: #f8f9fa; padding-top: 80px !important; }
+    .page-header-modern {
+        background: linear-gradient(135deg, #003d6b 0%, #004a7f 50%, #00527a 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 61, 107, 0.5);
+    }
+    .page-header-modern h2 { color: white; margin: 0; font-size: 1.875rem; font-weight: 700; }
+    .page-header-modern p { color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0; }
+    .btn-modern {
+        background: white;
+        color: #003d6b;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .btn-modern:hover { background: #f0f9ff; color: #003d6b; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+</style>
 <div class="container-fluid">
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-start mb-4">
+    <div class="page-header-modern d-flex justify-content-between align-items-center">
         <div>
-            <h2 class="mb-1" style="font-weight: 700; font-size: 1.875rem; color: var(--text);">Laporan Saya</h2>
-            <p class="text-muted mb-0">Lihat dan kelola semua laporan yang telah Anda buat.</p>
+            <h2>Laporan Saya</h2>
+            <p>Lihat dan kelola semua laporan yang telah Anda buat.</p>
         </div>
-        <a href="{{ route('citizen.reports.create') }}" class="btn btn-primary d-flex align-items-center gap-2" style="box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+        <a href="{{ route('citizen.reports.create') }}" class="btn-modern">
             <i class="fas fa-plus"></i>
             <span>Buat Laporan</span>
         </a>
@@ -191,13 +218,13 @@
 }
 
 .status-submitted, .status-pending {
-    background: #dcfce7;
-    color: #166534;
+    background: #f0f9ff;
+    color: #003d6b;
 }
 
 .status-verified, .status-in_progress, .status-assigned {
     background: #e0f2fe;
-    color: #075985;
+    color: #00527a;
 }
 
 .status-resolved, .status-closed {
@@ -247,8 +274,8 @@
 }
 
 .action-btn:hover {
-    background: rgba(37, 99, 235, 0.08);
-    color: var(--text);
+    background: rgba(0, 61, 107, 0.1);
+    color: #003d6b;
 }
 
 /* Empty State */
@@ -264,9 +291,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(37, 99, 235, 0.08);
+    background: rgba(0, 61, 107, 0.1);
     border-radius: 9999px;
-    color: var(--primary);
+    color: #003d6b;
     font-size: 2rem;
 }
 
