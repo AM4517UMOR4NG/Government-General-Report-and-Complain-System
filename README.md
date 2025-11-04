@@ -25,7 +25,7 @@ A comprehensive Laravel-based system for handling government reports and complai
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/AM4517UMOR4NG/Government-General-Report-and-Complain-System.git
    cd government-frc-system
    ```
 
