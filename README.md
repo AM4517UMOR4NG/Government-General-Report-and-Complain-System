@@ -53,7 +53,7 @@ A comprehensive Laravel-based system for handling government reports and complai
    php artisan migrate
    ```
 
-6. **Seed the database** (optional)
+6. **Seed the database** 
    ```bash
    php artisan db:seed
    ```
