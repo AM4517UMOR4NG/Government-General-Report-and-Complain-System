@@ -70,15 +70,6 @@ A comprehensive Laravel-based system for handling government reports and complai
 
 ## Configuration
 
-### Environment Variables
-
-Key environment variables for the FRC system:
-
-- `APP_NAME`: Set to "Government-General-Report-and-Complain-System-FRC"
-- `DB_DATABASE`: Database name (default: government_frc_system)
-- `MAIL_FROM_ADDRESS`: Email address for system notifications
-- `MAIL_FROM_NAME`: Display name for system emails
-
 ### Database Configuration
 
 The system uses MySQL as the default database. Ensure your database configuration in `.env` matches your MySQL setup:
