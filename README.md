@@ -155,13 +155,3 @@ The system provides RESTful API endpoints for:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-
-## Changelog
-
-### Version 1.0.0
-- Initial release
-- Basic report and complaint submission
-- User management system
-- Admin dashboard
-- Email notifications
